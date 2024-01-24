@@ -1,45 +1,48 @@
 const getState = ({ getStore, getActions, setStore }) => {
-	return {
-		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
-		},
-		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
+  return {
+    store: {
+      token: null,
+      threads: [],
+      userdata: {},
+    },
+    actions: {
+      auth: {
+        login: async (username, password) => {
+          //
+        },
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
+        signup: async (email, username, password) => {
+          //
+        },
+      },
 
-				//reset the global store
-				setStore({ demo: demo });
-			}
-		}
-	};
+      threads: {
+        create: async () => {
+          //
+        },
+
+        readMany: async (limit = 10, offset = 0) => {
+          const resp = await fetch(
+            `https://4geeks.dotlag.space/forum/threads/?limit=${limit}&offset=${offset}`
+          );
+          if (resp.ok) {
+            const data = await resp.json();
+            setStore({ threads: data.threads });
+          }
+        },
+
+        read: async (thread_id) => {
+          //
+        },
+      },
+
+      posts: {
+        create: async () => {
+          //
+        },
+      },
+    },
+  };
 };
 
 export default getState;
