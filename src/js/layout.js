@@ -4,6 +4,8 @@ import injectContext from "./store/appContext";
 import ScrollToTop from "./component/ScrollToTop.jsx";
 
 import { Home } from "./views/Home.jsx";
+import { Auth } from "./views/Auth.jsx";
+import { Threads } from "./views/Threads.jsx";
 
 import { Navbar } from "./component/Navbar.jsx";
 import { Footer } from "./component/Footer.jsx";
@@ -21,15 +23,12 @@ const Layout = () => {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<h1>This is the login page</h1>} />
+            <Route path="/login" element={<Auth />} />
             <Route
               path="/thread/new"
               element={<h1>This is the create-a-thread page</h1>}
             />
-            <Route
-              path="/thread/:thread_id"
-              element={<h1>This is a single thread page</h1>}
-            />
+            <Route path="/thread/:thread_id" element={<Threads />} />
             <Route path="*" element={<h1>Not found!</h1>} />
           </Routes>
           <Footer />

@@ -1,18 +1,52 @@
 const getState = ({ getStore, getActions, setStore }) => {
   return {
     store: {
-      token: null,
+      access_token: null,
       threads: [],
       userdata: {},
+      current_thread: {},
     },
     actions: {
       auth: {
-        login: async (username, password) => {
-          //
+        login: async (formData) => {
+          let urlFormData = new URLSearchParams();
+          for (let [k, v] of formData) {
+            urlFormData.append(k, v);
+          }
+
+          const resp = await fetch(
+            "https://4geeks.dotlag.space/forum/auth/token",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: urlFormData,
+            }
+          );
+          if (resp.ok) {
+            const data = await resp.json();
+            setStore({ access_token: data.access_token });
+          }
         },
 
-        signup: async (email, username, password) => {
-          //
+        signup: async (formData) => {
+          let signUpData = {};
+          for (let [k, v] of formData) {
+            signUpData[k] = v;
+          }
+
+          const resp = await fetch("https://4geeks.dotlag.space/forum/users", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(signUpData),
+          });
+          if (resp.ok) {
+            formData.delete("email");
+            await getActions().auth.login(formData);
+          }
         },
       },
 
@@ -32,7 +66,13 @@ const getState = ({ getStore, getActions, setStore }) => {
         },
 
         read: async (thread_id) => {
-          //
+          const resp = await fetch(
+            `https://4geeks.dotlag.space/forum/threads/${thread_id}`
+          );
+          if (resp.ok) {
+            const data = await resp.json();
+            setStore({ current_thread: data });
+          }
         },
       },
 
