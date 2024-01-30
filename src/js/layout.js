@@ -9,6 +9,7 @@ import { Threads } from "./views/Threads.jsx";
 
 import { Navbar } from "./component/Navbar.jsx";
 import { Footer } from "./component/Footer.jsx";
+import { NewThread } from "./views/NewThread.jsx";
 
 //create your first component
 const Layout = () => {
@@ -26,7 +27,7 @@ const Layout = () => {
             <Route path="/login" element={<Auth />} />
             <Route
               path="/thread/new"
-              element={<h1>This is the create-a-thread page</h1>}
+              element={<NewThread />}
             />
             <Route path="/thread/:thread_id" element={<Threads />} />
             <Route path="*" element={<h1>Not found!</h1>} />
