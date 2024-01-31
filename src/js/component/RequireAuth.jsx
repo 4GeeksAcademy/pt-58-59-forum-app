@@ -8,6 +8,12 @@ const AuthComponent = ({ children }) => {
   return <>{store.access_token ? children : ""}</>;
 };
 
+const CondAuthElem = ({ loggedInElem, loggedOutElem }) => {
+  const { store } = useContext(Context);
+
+  return <>{store.access_token ? loggedInElem : loggedOutElem}</>;
+};
+
 const AuthPage = ({ children }) => {
   const { store } = useContext(Context);
   const nav = useNavigate();
@@ -21,4 +27,4 @@ const AuthPage = ({ children }) => {
   return <>{children}</>;
 };
 
-export { AuthPage, AuthComponent };
+export { AuthPage, AuthComponent, CondAuthElem };

@@ -7,6 +7,22 @@ const getState = ({ getStore, getActions, setStore }) => {
       current_thread: {},
     },
     actions: {
+      data: {
+        dehydrate: () => {
+          if (getStore().access_token) {
+            sessionStorage.setItem("access_token", getStore().access_token);
+          }
+        },
+
+        rehydrate: () => {
+          if (sessionStorage.getItem("access_token")) {
+            setStore({
+              access_token: sessionStorage.getItem("access_token"),
+            });
+          }
+        },
+      },
+
       auth: {
         login: async (formData) => {
           let urlFormData = new URLSearchParams();
@@ -27,6 +43,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           if (resp.ok) {
             const data = await resp.json();
             setStore({ access_token: data.access_token });
+            getActions().data.dehydrate();
           }
         },
 
@@ -48,11 +65,32 @@ const getState = ({ getStore, getActions, setStore }) => {
             await getActions().auth.login(formData);
           }
         },
+
+        generateHeaders: () => {
+          return {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getStore().access_token}`,
+          };
+        },
       },
 
       threads: {
-        create: async () => {
-          //
+        create: async (title, content) => {
+          const resp = await fetch(
+            `https://4geeks.dotlag.space/forum/threads/`,
+            {
+              method: "POST",
+              headers: getActions().auth.generateHeaders(),
+              body: JSON.stringify({
+                title: title,
+                content: content,
+              }),
+            }
+          );
+          if (resp.ok) {
+            const data = await resp.json();
+            return data;
+          }
         },
 
         readMany: async (limit = 10, offset = 0) => {
@@ -77,8 +115,21 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       posts: {
-        create: async () => {
-          //
+        create: async (thread_id, content) => {
+          const resp = await fetch(
+            `https://4geeks.dotlag.space/forum/posts/replyto/${thread_id}`,
+            {
+              method: "POST",
+              headers: getActions().auth.generateHeaders(),
+              body: JSON.stringify({
+                content: content,
+              }),
+            }
+          );
+          if (resp.ok) {
+            const data = await resp.json();
+            return data;
+          }
         },
       },
     },

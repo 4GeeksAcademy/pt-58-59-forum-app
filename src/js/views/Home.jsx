@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { Context } from "../store/appContext.js";
 
 import ThreadPreview from "../component/ThreadPreview.jsx";
 import PageNavigation from "../component/PageNavigation.jsx";
+import { AuthComponent } from "../component/RequireAuth.jsx";
 
 import "../../styles/home.css";
 
@@ -41,6 +43,11 @@ export const Home = () => {
             onClickLeft={decrPage}
             onClickRight={incrPage}
           />
+          <AuthComponent>
+            <Link className="btn btn-primary" to="/thread/new">
+              Create A Thread
+            </Link>
+          </AuthComponent>
           {store.threads.map((thread) => (
             <ThreadPreview thread={thread} key={thread.id} />
           ))}
